@@ -1,10 +1,3 @@
-import { app } from "./app";
-import { env } from "./env";
+import fastify from 'fastify'
 
-app
-  .listen({
-    port: env.PORT,
-  })
-  .then(() => {
-    console.log("~ server running");
-  });
+export const app = fastify()
