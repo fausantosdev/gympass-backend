@@ -1,3 +1,10 @@
-import fastify from 'fastify'
+import { app } from './app'
 
-export const app = fastify()
+const port = Number(process.env.PORT) || 4004
+
+app.listen({
+  port
+}).then(() => {
+  console.log(`~ server running on port ${port}`)
+})
+
