@@ -1,6 +1,25 @@
-import { Prisma, User } from '@prisma/client'
+type UserType = {
+  id: string
+  name: string
+  email: string
+  password_hash: string
+  created_at: Date
+  updated_at: Date
+}
 
-export interface UsersRepository {
-  create(data: Prisma.UserCreateInput): Promise<User>
-  findByEmail(email: string): Promise<User | null>
+type CreateUserType = {
+  name: string
+  email: string
+  password_hash: string
+}
+
+interface UsersRepository {
+  create(data: CreateUserType): Promise<UserType>
+  findByEmail(email: string): Promise<UserType | null>
+}
+
+export {
+  UsersRepository,
+  UserType,
+  CreateUserType
 }
