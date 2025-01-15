@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach } from 'vitest'
-import { hashSync } from 'bcryptjs'
+import { hash } from 'bcryptjs'
 import { GetUserProfile } from './get-user-profile'
 import { InMemoryUserRepository } from '@/repositories/in-memory/in-memory-user-repository'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
@@ -17,7 +17,7 @@ describe('Get user profile use case', () => {
     const createdUser = await inMemoryUserRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
-      password_hash: await hashSync('123456', 6)
+      password_hash: await hash('123456', 6)
     })
 
     const { user } = await sut.execute({ userId: createdUser.id })
