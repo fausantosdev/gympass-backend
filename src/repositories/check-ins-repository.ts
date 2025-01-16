@@ -12,13 +12,14 @@ type CreateCheckInType = {
   validatedAt?: Date
 }
 
-interface CheckInRepository {
+interface CheckInsRepository {
   create(data: CreateCheckInType): Promise<CheckInType>
   findById(id: string): Promise<CheckInType | null>
+  findByUserIdOnDate(userId: string, date: Date): Promise<CheckInType | null>
 }
 
 export {
-  CheckInRepository,
+  CheckInsRepository,
   CheckInType,
   CreateCheckInType
 }
