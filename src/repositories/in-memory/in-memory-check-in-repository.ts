@@ -1,9 +1,9 @@
 
 import { randomUUID } from 'node:crypto'
 
-import { CheckInRepository, CheckInType, CreateCheckInType } from '../check-in-repository'
+import { CheckInsRepository, CheckInType, CreateCheckInType } from '../check-ins-repository'
 
-class InMemoryCheckInRepository implements CheckInRepository {
+class InMemoryCheckInRepository implements CheckInsRepository {
   public checkIns: CheckInType[] = []
 
   async create(data: CreateCheckInType) {
@@ -24,6 +24,14 @@ class InMemoryCheckInRepository implements CheckInRepository {
     const checkIn = this.checkIns.find((checkIn: CheckInType) => checkIn.id === id)
 
     return checkIn || null
+  }
+
+  async findByUserIdOnDate(userId: string, date: Date) {
+    const checkInOnSameDate = this.checkIns.find((checkIn: CheckInType) => checkIn.user_id === userId)
+
+    if (!checkInOnSameDate) return null
+
+    return checkInOnSameDate
   }
 }
 
