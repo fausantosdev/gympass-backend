@@ -2,6 +2,7 @@
 import { randomUUID } from 'node:crypto'
 
 import { CheckInsRepository, CheckInType, CreateCheckInType } from '../check-ins-repository'
+import dayjs from 'dayjs'
 
 class InMemoryCheckInRepository implements CheckInsRepository {
   public checkIns: CheckInType[] = []
@@ -27,7 +28,15 @@ class InMemoryCheckInRepository implements CheckInsRepository {
   }
 
   async findByUserIdOnDate(userId: string, date: Date) {
-    const checkInOnSameDate = this.checkIns.find((checkIn: CheckInType) => checkIn.user_id === userId)
+    const startOfTheDay = dayjs(date).startOf('date')
+    const endOfTheDay = dayjs(date).endOf('date')
+
+    const checkInOnSameDate = this.checkIns.find((checkIn: CheckInType) => {
+      const checkInDate = dayjs(checkIn.created_at)
+      const isOnSameDate = checkInDate.isAfter(startOfTheDay) && checkInDate.isBefore(endOfTheDay)
+
+      return checkIn.user_id === userId && isOnSameDate
+    })
 
     if (!checkInOnSameDate) return null
 
