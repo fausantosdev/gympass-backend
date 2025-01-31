@@ -1,17 +1,41 @@
-import { randomUUID } from 'node:crypto'
-
 import { expect, describe, it, beforeEach, vi, afterEach } from 'vitest'
 
 import { InMemoryCheckInRepository } from '@/repositories/in-memory/in-memory-check-in-repository'
+import { InMemoryGymRepository } from '@/repositories/in-memory/in-memory-gym-repository'
 import { CheckIn } from './check-in'
 
 let inMemoryCheckInRepository: InMemoryCheckInRepository
+let inMemoryGymRepository: InMemoryGymRepository
 let sut: CheckIn
+
+const userCoordinates = {
+  userLatitude: -8.0610064,
+  userLongitude: -34.8820621
+}
+
+const distantGymCoordinates = {
+  latitude: -8.0623634,
+  longitude: -34.8859246
+}
 
 describe('Check-in use case', () => {
   beforeEach(() => {
     inMemoryCheckInRepository = new InMemoryCheckInRepository()
-    sut = new CheckIn(inMemoryCheckInRepository)
+    inMemoryGymRepository = new InMemoryGymRepository()
+
+    sut = new CheckIn(
+        inMemoryCheckInRepository,
+        inMemoryGymRepository
+      )
+
+    inMemoryGymRepository.users.push({
+      id: 'gymId',
+      title: 'Academia Corpo Vivo',
+      description: 'Academia mais famosa da cidade',
+      phone: '88888888888',
+      latitude: -8.0610064,
+      longitude: -34.8820621
+    })
 
     vi.useFakeTimers()
   })
@@ -21,11 +45,10 @@ describe('Check-in use case', () => {
   })
 
   it('should be able to check in', async () => {
-    vi.setSystemTime(new Date(2023, 0, 20, 8, 0, 0))
-
     const { checkIn } = await sut.execute({
-      userId: randomUUID(),
-      gymId: randomUUID()
+      userId: 'userId',
+      gymId: 'gymId',
+      ...userCoordinates
     })
 
     expect(checkIn.id).toEqual(expect.any(String))
@@ -34,32 +57,52 @@ describe('Check-in use case', () => {
   it('should not be able to check in twice in the same day', async () => {
     vi.setSystemTime(new Date(2023, 0, 20, 8, 0, 0))
 
-    const a = await sut.execute({
+    await sut.execute({
       userId: 'userId',
-      gymId: 'gymId'
+      gymId: 'gymId',
+      ...userCoordinates
     })
-    console.log('A: ', a.checkIn.created_at)
 
     await expect(() => sut.execute({
       userId: 'userId',
-      gymId: 'gymId'
+      gymId: 'gymId',
+      ...userCoordinates
     })).rejects.toBeInstanceOf(Error)
   })
 
   it('should be able to check in twice but in different days', async () => {
     vi.setSystemTime(new Date(2023, 0, 20, 8, 0, 0))
-    const a = await sut.execute({
+
+    await sut.execute({
       userId: 'userId',
-      gymId: 'gymId'
+      gymId: 'gymId',
+      ...userCoordinates
     })
 
     vi.setSystemTime(new Date(2023, 0, 21, 8, 0, 0))
 
     const { checkIn } = await sut.execute({
       userId: 'userId',
-      gymId: 'gymId'
+      gymId: 'gymId',
+      ...userCoordinates
     })
 
     expect(checkIn.id).toEqual(expect.any(String))
+  })
+
+  it('should not be able to check in on distant gym', async () => {
+    inMemoryGymRepository.users.push({
+      id: 'gymId2',
+      title: 'Academia Corpo Vivo',
+      description: 'Academia mais famosa da cidade',
+      phone: '88888888888',
+      ...distantGymCoordinates
+    })
+
+    await expect(() => sut.execute({
+      userId: 'userId',
+      gymId: 'gymId2',
+      ...userCoordinates
+    })).rejects.toBeInstanceOf(Error)
   })
 })
