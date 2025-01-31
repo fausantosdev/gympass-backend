@@ -5,13 +5,13 @@ import { expect, describe, it, beforeEach, vi, afterEach } from 'vitest'
 import { InMemoryCheckInRepository } from '@/repositories/in-memory/in-memory-check-in-repository'
 import { CheckIn } from './check-in'
 
-let inMemoryUserRepository: InMemoryCheckInRepository
+let inMemoryCheckInRepository: InMemoryCheckInRepository
 let sut: CheckIn
 
 describe('Check-in use case', () => {
   beforeEach(() => {
-    inMemoryUserRepository = new InMemoryCheckInRepository()
-    sut = new CheckIn(inMemoryUserRepository)
+    inMemoryCheckInRepository = new InMemoryCheckInRepository()
+    sut = new CheckIn(inMemoryCheckInRepository)
 
     vi.useFakeTimers()
   })
