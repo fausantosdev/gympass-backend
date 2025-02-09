@@ -3,6 +3,8 @@ import { expect, describe, it, beforeEach, vi, afterEach } from 'vitest'
 import { InMemoryCheckInRepository } from '@/repositories/in-memory/in-memory-check-in-repository'
 import { InMemoryGymRepository } from '@/repositories/in-memory/in-memory-gym-repository'
 import { CheckIn } from './check-in'
+import { MaxNumbersOfCkeckInsError } from './errors/max-numbers-of-check-ins-error'
+import { MaxDistanceError } from './errors/max-distance-error'
 
 let inMemoryCheckInRepository: InMemoryCheckInRepository
 let inMemoryGymRepository: InMemoryGymRepository
@@ -19,7 +21,7 @@ const distantGymCoordinates = {
 }
 
 describe('Check-in use case', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     inMemoryCheckInRepository = new InMemoryCheckInRepository()
     inMemoryGymRepository = new InMemoryGymRepository()
 
@@ -28,8 +30,9 @@ describe('Check-in use case', () => {
         inMemoryGymRepository
       )
 
-    inMemoryGymRepository.users.push({
+    await inMemoryGymRepository.create({
       id: 'gymId',
+      user_id: 'userId',
       title: 'Academia Corpo Vivo',
       description: 'Academia mais famosa da cidade',
       phone: '88888888888',
@@ -67,7 +70,7 @@ describe('Check-in use case', () => {
       userId: 'userId',
       gymId: 'gymId',
       ...userCoordinates
-    })).rejects.toBeInstanceOf(Error)
+    })).rejects.toBeInstanceOf(MaxNumbersOfCkeckInsError)
   })
 
   it('should be able to check in twice but in different days', async () => {
@@ -91,8 +94,9 @@ describe('Check-in use case', () => {
   })
 
   it('should not be able to check in on distant gym', async () => {
-    inMemoryGymRepository.users.push({
+    await inMemoryGymRepository.create({
       id: 'gymId2',
+      user_id: 'userID2',
       title: 'Academia Corpo Vivo',
       description: 'Academia mais famosa da cidade',
       phone: '88888888888',
@@ -103,6 +107,6 @@ describe('Check-in use case', () => {
       userId: 'userId',
       gymId: 'gymId2',
       ...userCoordinates
-    })).rejects.toBeInstanceOf(Error)
+    })).rejects.toBeInstanceOf(MaxDistanceError)
   })
 })
