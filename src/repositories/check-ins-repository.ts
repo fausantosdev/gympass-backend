@@ -16,6 +16,7 @@ interface CheckInsRepository {
   create(data: CreateCheckInType): Promise<CheckInType>
   findById(id: string): Promise<CheckInType | null>
   findByUserIdOnDate(userId: string, date: Date): Promise<CheckInType | null>
+  findManyByUserId(id: string, page: number): Promise<CheckInType[]>
 }
 
 export {
