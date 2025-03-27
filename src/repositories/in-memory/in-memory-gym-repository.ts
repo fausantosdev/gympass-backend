@@ -25,9 +25,15 @@ class InMemoryGymRepository implements GymsRepository {
 
 
   async findById(id: string) {
-    const gyms = this.gyms.find((user:GymType) => user.id === id)
+    const gyms = this.gyms.find((gym:GymType) => gym.id === id)
 
     return gyms || null
+  }
+
+  async searchMany(query: string, page: number) {
+    return this.gyms
+      .filter((gym: GymType) => gym.title.includes(query))
+      .slice((page - 1) * 20, page * 20)
   }
 }
 
