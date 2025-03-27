@@ -23,6 +23,7 @@ type CreateGymType = {
 interface GymsRepository {
   create(data: CreateGymType): Promise<GymType>
   findById(id: string): Promise<GymType | null>
+  searchMany(query: string, page: number): Promise<GymType[]>
 }
 
 export {
