@@ -2,12 +2,12 @@ type GymType = {
   id: string
   user_id: string
   title: string
-  description?: string
-  phone?: string
+  description: string | null
+  phone: string | null
   latitude: number
   longitude: number
-  created_at?: Date
-  updated_at?: Date
+  created_at: Date
+  updated_at: Date
 }
 
 type CreateGymType = {
