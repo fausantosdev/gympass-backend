@@ -13,7 +13,7 @@ export async function search(request: FastifyRequest, reply: FastifyReply) {
       .default(1)
   })
 
-  const { q, page } = queryParamsSchema.parse(request.body)
+  const { q, page } = queryParamsSchema.parse(request.query)
 
   const searchGyms = makeSearchGymsUseCase()
 
