@@ -1,7 +1,6 @@
 import { GymsRepository, GymType } from '@/repositories/gyms-repository'
 
 type Params = {
-  user_id: string
   title: string
   description?: string
   phone?: string
@@ -18,9 +17,8 @@ export class CreateGym {
     private gymsRepository: GymsRepository
   ) {}
 
-  async execute({ user_id, title, description, phone, latitude, longitude }: Params): Promise<CreateGymResponse> {
+  async execute({ title, description, phone, latitude, longitude }: Params): Promise<CreateGymResponse> {
     const gym = await this.gymsRepository.create({
-      user_id,
       title,
       description,
       phone,

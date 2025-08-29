@@ -10,7 +10,6 @@ type GymType = {
 }
 
 type CreateGymType = {
-  user_id: string
   title: string
   description?: string
   phone?: string

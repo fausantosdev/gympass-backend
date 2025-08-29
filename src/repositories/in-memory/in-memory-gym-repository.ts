@@ -9,7 +9,6 @@ class InMemoryGymRepository implements GymsRepository {
   async create(data: CreateGymType) {
     const gym = {
       id: data.id || randomUUID(),
-      user_id: data.user_id,
       title: data.title,
       description: data.description,
       phone: data.phone,
