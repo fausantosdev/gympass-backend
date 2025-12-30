@@ -29,13 +29,11 @@ describe('Fetch nearby gyms use case', () => {
 
   it('should be able to fetch nearby gyms', async () => {
     await inMemoryGymRepository.create({
-      user_id: 'gymId3',
       title: 'Nearby Gym',
       ...nearbyGymCoordinates
     })
 
     await inMemoryGymRepository.create({
-      user_id: 'gymId3',
       title: 'Distant Gym',
       ...distantGymCoordinates
     })
