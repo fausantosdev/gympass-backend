@@ -1,8 +1,8 @@
 type GymType = {
   id: string
   title: string
-  description: string | null
-  phone: string | null
+  description?: string
+  phone?: string
   latitude: number | any
   longitude: number | any
   created_at: Date

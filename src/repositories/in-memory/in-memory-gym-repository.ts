@@ -6,7 +6,7 @@ import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coor
 class InMemoryGymRepository implements GymsRepository {
   public gyms: GymType[] = []
 
-  async create(data: CreateGymType) {
+  async create(data: CreateGymType & { id?: string }) {
     const gym = {
       id: data.id || randomUUID(),
       title: data.title,
