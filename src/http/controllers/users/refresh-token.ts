@@ -4,30 +4,23 @@ import { z } from 'zod'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/factories/make-authenticate-use-case'
 
-export async function authenticate (request: FastifyRequest, reply: FastifyReply) {
-  const bodySchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(6)
-  })
-
-  const { email, password } = bodySchema.parse(request.body)
-
+export async function refreshToken (request: FastifyRequest, reply: FastifyReply) {
   try {
-    const authenticate = makeAuthenticateUseCase()
-
-    const { user } = await authenticate.execute({ email, password })
+    await request.jwtVerify({
+      onlyCookie: true// verifica o token apenas nos cookies, justamente porque o refresh token está lá
+    })
 
     const token = await reply.jwtSign(
       {}, {
       sign: {
-        sub: user.id
+        sub: String(request.user.sub),
       }
     })
 
     const refreshToken = await reply.jwtSign(
       {}, {
       sign: {
-        sub: user.id,
+        sub: String(request.user.sub),
         expiresIn: '7d'
       }
     })
