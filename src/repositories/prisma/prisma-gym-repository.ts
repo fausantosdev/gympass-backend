@@ -35,6 +35,7 @@ class PrismaGymsRepository implements GymsRepository {
   }
 
   async findManyNearby({ latitude, longitude }: FindManyNearbyParams): Promise<GymType[]> {
+    console.log('Fetching nearby gyms for coordinates:', latitude, longitude)
     const gyms = await prisma.$queryRaw<GymType[]>`
       SELECT * FROM gyms g
         WHERE ( 6371 * acos(

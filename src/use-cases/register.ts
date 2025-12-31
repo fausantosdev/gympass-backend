@@ -1,17 +1,17 @@
 import * as bcrypt from 'bcryptjs'
 
-import { UsersRepository } from '@/repositories/users-repository'
+import { UsersRepository, UserType } from '@/repositories/users-repository'
 import { UserEmailAlreadyExistsError } from './errors/user-email-already-exists-error'
-import { User } from '@prisma/client'
 
 type Params = {
   name: string
   email: string
   password: string
+  role?: string
 }
 
 type RegisterUserResponse = {
-  user: User
+  user: UserType
 }
 
 export class RegisterUser {
@@ -19,7 +19,7 @@ export class RegisterUser {
     private usersRepository: UsersRepository
   ) {}
 
-  async execute({ name, email, password }: Params): Promise<RegisterUserResponse> {
+  async execute({ name, email, password, role }: Params): Promise<RegisterUserResponse> {
     const emailAlreadyRegistered = await this.usersRepository.findByEmail(email)
 
     if(emailAlreadyRegistered) {
@@ -31,7 +31,8 @@ export class RegisterUser {
     const user = await this.usersRepository.create({
       name,
       email,
-      password_hash
+      password_hash,
+      role
     })
 
     return { user }

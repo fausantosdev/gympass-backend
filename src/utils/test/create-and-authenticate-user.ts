@@ -1,13 +1,14 @@
 import request from 'supertest'
 import { FastifyInstance } from 'fastify'
 
-export async function createAndAuthenticateUser(app: FastifyInstance) {
+export async function createAndAuthenticateUser(app: FastifyInstance, isAdmin = false) {
   await request(app.server)
     .post('/users')
     .send({
       name: 'John Doe',
       email: 'johndoe@example.com',
-      password: '123456'
+      password: '123456',
+      role: isAdmin ? 'ADMIN' : 'MEMBER',
     })
 
   const authResponse = await request(app.server)

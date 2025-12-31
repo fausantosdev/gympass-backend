@@ -3,6 +3,7 @@ type UserType = {
   name: string
   email: string
   password_hash: string
+  role: string
   created_at: Date
   updated_at: Date
 }
@@ -11,6 +12,7 @@ type CreateUserType = {
   name: string
   email: string
   password_hash: string
+  role?: string
 }
 
 interface UsersRepository {
